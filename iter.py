@@ -56,15 +56,46 @@ class FlatIterator:
 
 # класс итератора
 
+# функция генератор
+def flat_generator(the_list: list):
+    
+    # копируем исходный список для обработки
+    iter_list = copy.deepcopy(the_list)
+
+    # внутренняя функция извлечения элемента списка
+    def get_item(a_list):
+        i = 0
+        while i < len(a_list):
+            if type(a_list[i]) is list:
+                 yield from get_item(a_list[i])
+                 if len(a_list[i]) == 0:
+                     a_list.pop(i)    
+            else:
+                item = a_list.pop(i)
+                yield item
+    # end get_item()
+
+    if len(iter_list) > 0:
+        yield from get_item(iter_list)
+        
+# end flat_generator
+
 # Главная функция программы
 
 def main():
     
+    # работа итератора
+    print('## ИТЕРАТОР ##')
     for item in FlatIterator(nested_list):
 	    print(item)
     
     flat_list = [item for item in FlatIterator(nested_list)]
     print(flat_list)
+
+    # работа генератора
+    print('## ГЕНЕРАТОР ##')
+    for item in flat_generator(nested_list):
+	    print(item)
 
 # end main
 
